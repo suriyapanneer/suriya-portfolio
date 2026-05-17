@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Suriya — Full Stack Developer & AI Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#060810;--card:#0D1520;--card2:#0A1118;--accent:#00FFB2;--accent2:#0EA5E9;--text:#EDF2F7;--muted:#4A5868;--border:rgba(255,255,255,0.07);}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;overflow-x:hidden;cursor:none;}
+#cur{position:fixed;width:9px;height:9px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .18s,height .18s;}
+#cur-ring{position:fixed;width:34px;height:34px;border:1px solid rgba(0,255,178,0.3);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.5;}
+
+nav{position:fixed;top:0;width:100%;z-index:500;display:flex;justify-content:space-between;align-items:center;padding:1.1rem 5%;border-bottom:1px solid var(--border);background:rgba(6,8,16,0.88);backdrop-filter:blur(20px);}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:4px;color:var(--accent);text-shadow:0 0 20px rgba(0,255,178,0.3);}
+.nav-links{display:flex;gap:2.5rem;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.76rem;letter-spacing:2px;text-transform:uppercase;transition:color .2s;}
+.nav-links a:hover{color:var(--accent);}
+.hire-btn{position:relative;overflow:hidden;border:1px solid var(--accent);color:var(--accent);padding:.48rem 1.3rem;border-radius:3px;text-decoration:none;font-size:.76rem;letter-spacing:2px;text-transform:uppercase;transition:color .25s;}
+.hire-btn::before{content:'';position:absolute;inset:0;background:var(--accent);transform:translateX(-101%);transition:transform .25s ease;}
+.hire-btn:hover{color:var(--bg);}.hire-btn:hover::before{transform:translateX(0);}
+.hire-btn span{position:relative;z-index:1;}
+
+.hero{min-height:100vh;display:flex;align-items:center;padding:9rem 5% 5rem;position:relative;overflow:hidden;}
+.glow1{position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(0,255,178,0.07) 0%,transparent 65%);top:-200px;right:-150px;pointer-events:none;}
+.glow2{position:absolute;width:450px;height:450px;background:radial-gradient(circle,rgba(14,165,233,0.05) 0%,transparent 65%);bottom:-50px;left:5%;pointer-events:none;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,255,178,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,178,0.025) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 70% 80% at 80% 30%,black 20%,transparent 80%);}
+.hero-content{position:relative;z-index:1;max-width:1000px;}
+.hero-badge{display:inline-flex;align-items:center;gap:.6rem;background:rgba(0,255,178,0.05);border:1px solid rgba(0,255,178,0.18);padding:.4rem 1rem;border-radius:40px;margin-bottom:2rem;animation:up .7s ease both;}
+.pulse-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;position:relative;flex-shrink:0;}
+.pulse-dot::after{content:'';position:absolute;inset:-3px;background:rgba(0,255,178,0.25);border-radius:50%;animation:ping 1.8s infinite;}
+.hero-badge span{font-size:.74rem;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;}
+.hero-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(4.5rem,12vw,10.5rem);line-height:.88;letter-spacing:2px;animation:up .7s .1s ease both;opacity:0;}
+.hero-name .hollow{display:block;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,0.12);}
+.hero-name .lit{color:var(--accent);position:relative;display:inline-block;}
+.hero-name .lit::after{content:'';position:absolute;left:0;bottom:6px;right:0;height:4px;background:var(--accent);border-radius:2px;transform:scaleX(0);transform-origin:left;animation:grow .6s 1s ease forwards;}
+.hero-sub{margin:1.8rem 0 2.5rem;font-size:clamp(.95rem,1.5vw,1.1rem);color:var(--muted);line-height:1.85;max-width:580px;animation:up .7s .2s ease both;opacity:0;}
+.hero-sub strong{color:var(--text);}
+.hero-btns{display:flex;gap:.9rem;flex-wrap:wrap;animation:up .7s .3s ease both;opacity:0;}
+.btn-g{background:var(--accent);color:var(--bg);padding:.82rem 2rem;border-radius:5px;font-weight:700;font-size:.88rem;text-decoration:none;letter-spacing:.3px;transition:all .2s;display:inline-flex;align-items:center;gap:.5rem;}
+.btn-g:hover{background:#00e6a0;box-shadow:0 0 28px rgba(0,255,178,0.28);transform:translateY(-2px);}
+.btn-o{background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:.82rem 2rem;border-radius:5px;font-weight:500;font-size:.88rem;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:.5rem;}
+.btn-o:hover{border-color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.04);}
+.hero-nums{position:absolute;right:5%;bottom:12%;display:flex;gap:3rem;animation:up .7s .5s ease both;opacity:0;}
+.h-stat .n{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;line-height:1;color:var(--accent);}
+.h-stat .l{font-size:.7rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:.2rem;}
+.scroll-cue{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;animation:up .7s .9s ease both;opacity:0;}
+.scroll-cue span{font-size:.65rem;color:var(--muted);letter-spacing:3px;text-transform:uppercase;}
+.scroll-line{width:1px;height:45px;background:linear-gradient(to bottom,var(--accent),transparent);animation:scrollPulse 2s ease infinite;}
+
+.marquee-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:1.2rem 0;background:rgba(0,255,178,0.015);}
+.marquee-track{display:flex;gap:3rem;animation:scroll 20s linear infinite;width:max-content;}
+.m-item{display:flex;align-items:center;gap:.8rem;font-size:.72rem;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;white-space:nowrap;}
+.m-dot{width:4px;height:4px;background:var(--accent);border-radius:50%;flex-shrink:0;}
+
+.about{padding:6rem 5%;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:6rem;align-items:center;}
+.about-big{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,7vw,8rem);line-height:1;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,0.05);letter-spacing:4px;writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);}
+.about-right p{font-size:1.03rem;color:var(--muted);line-height:1.9;margin-bottom:1.2rem;}
+.about-right p strong{color:var(--text);}
+.chips{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.5rem;}
+.chip{background:rgba(0,255,178,0.05);border:1px solid rgba(0,255,178,0.14);color:var(--accent);padding:.28rem .9rem;border-radius:40px;font-size:.76rem;letter-spacing:.5px;}
+
+.projects{padding:5rem 5%;max-width:1200px;margin:0 auto;}
+.sec-eye{font-size:.7rem;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:.5rem;}
+.sec-head{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4rem);letter-spacing:2px;margin-bottom:3rem;}
+.proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+.proj-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .3s,transform .3s;position:relative;}
+.proj-card:hover{border-color:rgba(0,255,178,0.28);transform:translateY(-5px);}
+.proj-card.span2{grid-column:span 2;}
+.proj-thumb{height:220px;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative;overflow:hidden;}
+.proj-thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,var(--card));pointer-events:none;}
+.t1{background:linear-gradient(135deg,#0A1F35,#0D2845);}
+.t2{background:linear-gradient(135deg,#1C0D00,#2A1500);}
+.t3{background:linear-gradient(135deg,#080C14,#0D1828);}
+.proj-body{padding:1.6rem;}
+.proj-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem;}
+.ptag{font-size:.66rem;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;background:rgba(255,255,255,0.04);border:1px solid var(--border);padding:.18rem .55rem;border-radius:3px;}
+.proj-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:1px;margin-bottom:.5rem;line-height:1.05;}
+.proj-desc{font-size:.83rem;color:var(--muted);line-height:1.65;margin-bottom:1.2rem;}
+.proj-link{display:inline-flex;align-items:center;gap:.4rem;color:var(--accent);font-size:.78rem;font-weight:700;text-decoration:none;letter-spacing:.5px;padding-bottom:2px;border-bottom:1px solid rgba(0,255,178,0.25);transition:all .2s;}
+.proj-link:hover{border-color:var(--accent);gap:.7rem;}
+.proj-num{position:absolute;top:1.2rem;right:1.5rem;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:rgba(255,255,255,0.05);}
+
+.services{padding:5rem 5%;border-top:1px solid var(--border);}
+.svc-inner{max-width:1200px;margin:0 auto;}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:14px;overflow:hidden;border:1px solid var(--border);margin-top:3rem;}
+.svc-card{background:var(--card2);padding:2rem;transition:background .2s;}
+.svc-card:hover{background:rgba(0,255,178,0.03);}
+.svc-n{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;line-height:1;color:rgba(0,255,178,0.07);margin-bottom:.5rem;}
+.svc-icon{font-size:1.5rem;margin-bottom:.7rem;}
+.svc-title{font-size:.95rem;font-weight:700;margin-bottom:.45rem;}
+.svc-desc{font-size:.8rem;color:var(--muted);line-height:1.65;margin-bottom:1.2rem;}
+.svc-quote{display:inline-flex;align-items:center;gap:.4rem;background:transparent;border:1px solid rgba(0,255,178,0.2);color:var(--accent);font-size:.74rem;font-weight:600;padding:.28rem .8rem;border-radius:4px;text-decoration:none;letter-spacing:.5px;transition:all .2s;}
+.svc-quote:hover{background:rgba(0,255,178,0.06);border-color:var(--accent);}
+
+.why{padding:5rem 5%;max-width:1200px;margin:0 auto;}
+.why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:3rem;}
+.why-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.6rem;transition:border-color .25s,transform .25s;}
+.why-card:hover{border-color:rgba(0,255,178,0.2);transform:translateY(-3px);}
+.why-icon{font-size:1.6rem;margin-bottom:.8rem;}
+.why-title{font-size:.92rem;font-weight:700;margin-bottom:.4rem;}
+.why-desc{font-size:.79rem;color:var(--muted);line-height:1.6;}
+
+.cta{margin:0 5% 5rem;border-radius:16px;border:1px solid rgba(0,255,178,0.14);background:linear-gradient(135deg,rgba(0,255,178,0.06),rgba(14,165,233,0.03));padding:5rem 4rem;position:relative;overflow:hidden;}
+.cta::before{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(0,255,178,0.08),transparent 70%);top:-100px;right:-100px;pointer-events:none;}
+.cta-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:center;}
+.cta h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4vw,3.5rem);letter-spacing:2px;line-height:1.1;margin-bottom:.7rem;}
+.cta h2 span{color:var(--accent);}
+.cta p{color:var(--muted);font-size:.93rem;line-height:1.65;}
+.cta-btns{display:flex;flex-direction:column;gap:.8rem;align-items:flex-end;}
+.wa-btn{background:#25D366;color:#fff;padding:.9rem 1.8rem;border-radius:7px;font-weight:700;text-decoration:none;font-size:.88rem;display:flex;align-items:center;gap:.6rem;white-space:nowrap;transition:all .2s;}
+.wa-btn:hover{background:#1ebd5a;transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,0.22);}
+.email-btn{color:var(--muted);font-size:.8rem;text-decoration:none;display:flex;align-items:center;gap:.4rem;transition:color .2s;}
+.email-btn:hover{color:var(--text);}
+
+footer{border-top:1px solid var(--border);padding:1.8rem 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.f-logo{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:4px;color:var(--accent);}
+footer p{font-size:.73rem;color:var(--muted);}
+
+@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ping{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.8);opacity:0}}
+@keyframes grow{to{transform:scaleX(1)}}
+@keyframes scrollPulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes scroll{to{transform:translateX(-50%)}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:900px){.proj-grid{grid-template-columns:1fr;}.proj-card.span2{grid-column:span 1;}.svc-grid{grid-template-columns:1fr 1fr;}.why-grid{grid-template-columns:1fr 1fr;}.cta-inner{grid-template-columns:1fr;}.cta-btns{align-items:flex-start;}.hero-nums{display:none;}.about{grid-template-columns:1fr;}.about-big{writing-mode:horizontal-tb;transform:none;font-size:3rem;}.nav-links{display:none;}}
+@media(max-width:600px){.svc-grid{grid-template-columns:1fr;}.why-grid{grid-template-columns:1fr;}.cta{padding:3rem 1.5rem;}}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="cur-ring"></div>
+
+<nav>
+  <div class="logo">SURIYA</div>
+  <ul class="nav-links">
+    <li><a href="#projects">Work</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="https://wa.me/919791491767" class="hire-btn"><span>Hire Me</span></a>
+</nav>
+
+<section class="hero">
+  <div class="glow1"></div><div class="glow2"></div><div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><div class="pulse-dot"></div><span>Available for freelance projects</span></div>
+    <div class="hero-name">
+      <span class="hollow">FULL STACK</span>
+      <span class="lit">DEVELOPER</span>
+      <span class="hollow">&amp; AI BUILDER</span>
+    </div>
+    <p class="hero-sub">I'm <strong>Suriya</strong>, a self-taught developer who builds real business software using <strong>React, Node.js &amp; AI</strong>. I deliver faster than traditional developers — and everything I build actually works.</p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn-g"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>View My Work</a>
+      <a href="https://wa.me/919791491767" class="btn-o"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>WhatsApp Me</a>
+    </div>
+  </div>
+  <div class="hero-nums">
+    <div class="h-stat"><div class="n">3+</div><div class="l">Projects Built</div></div>
+    <div class="h-stat"><div class="n">24H</div><div class="l">Delivery Speed</div></div>
+    <div class="h-stat"><div class="n">AI</div><div class="l">Powered Dev</div></div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><div class="scroll-line"></div></div>
+</section>
+
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <div class="m-item"><span class="m-dot"></span>React.js</div><div class="m-item"><span class="m-dot"></span>Node.js</div><div class="m-item"><span class="m-dot"></span>AI Integration</div><div class="m-item"><span class="m-dot"></span>Full Stack Development</div><div class="m-item"><span class="m-dot"></span>REST APIs</div><div class="m-item"><span class="m-dot"></span>MySQL / MongoDB</div><div class="m-item"><span class="m-dot"></span>Vercel / Render</div><div class="m-item"><span class="m-dot"></span>WhatsApp Integration</div><div class="m-item"><span class="m-dot"></span>Claude API</div><div class="m-item"><span class="m-dot"></span>PHP</div>
+    <div class="m-item"><span class="m-dot"></span>React.js</div><div class="m-item"><span class="m-dot"></span>Node.js</div><div class="m-item"><span class="m-dot"></span>AI Integration</div><div class="m-item"><span class="m-dot"></span>Full Stack Development</div><div class="m-item"><span class="m-dot"></span>REST APIs</div><div class="m-item"><span class="m-dot"></span>MySQL / MongoDB</div><div class="m-item"><span class="m-dot"></span>Vercel / Render</div><div class="m-item"><span class="m-dot"></span>WhatsApp Integration</div><div class="m-item"><span class="m-dot"></span>Claude API</div><div class="m-item"><span class="m-dot"></span>PHP</div>
+  </div>
+</div>
+
+<div class="about reveal">
+  <div class="about-big">ABOUT</div>
+  <div class="about-right">
+    <p>I'm a self-taught full stack developer who builds fast, practical web applications for real business problems. I combine modern web tech with <strong>AI-powered development</strong> to deliver projects 2–3× faster.</p>
+    <p>My approach: understand the problem first, build the simplest thing that solves it, and ship fast. No over-engineering. No fluff. <strong>Just working software that clients love.</strong></p>
+    <div class="chips">
+      <span class="chip">React.js</span><span class="chip">Node.js</span><span class="chip">AI Tools</span><span class="chip">REST APIs</span><span class="chip">MySQL</span><span class="chip">PHP</span><span class="chip">Vercel</span><span class="chip">WhatsApp API</span><span class="chip">Claude API</span>
+    </div>
+  </div>
+</div>
+
+<section class="projects reveal" id="projects">
+  <p class="sec-eye">Selected Work</p>
+  <h2 class="sec-head">Projects I've Built</h2>
+  <div class="proj-grid">
+    <div class="proj-card span2">
+      <div class="proj-num">01</div>
+      <div class="proj-thumb t1">🏗️</div>
+      <div class="proj-body">
+        <div class="proj-tags"><span class="ptag">React.js</span><span class="ptag">Node.js</span><span class="ptag">AI Powered</span><span class="ptag">SaaS</span><span class="ptag">Full Stack</span></div>
+        <div class="proj-title">SiteBoss — Construction Site & Worker Management</div>
+        <p class="proj-desc">A full-featured SaaS platform for construction companies to manage sites, workers, attendance, tasks, and daily progress — all from one intelligent dashboard. Built with React and Node.js, with AI-powered insights that help site managers make faster, smarter decisions on the ground.</p>
+        <a href="https://siteboss-ten.vercel.app/" target="_blank" class="proj-link">View Live Project <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-num">02</div>
+      <div class="proj-thumb t2">🍽️</div>
+      <div class="proj-body">
+        <div class="proj-tags"><span class="ptag">HTML/CSS/JS</span><span class="ptag">Landing Page</span><span class="ptag">WhatsApp</span></div>
+        <div class="proj-title">Spice Garden Restaurant</div>
+        <p class="proj-desc">Premium restaurant website with interactive menu tabs, opening hours, location, and WhatsApp table reservation. Built for local South Indian restaurants wanting a strong, beautiful online presence.</p>
+        <a href="restaurant-demo.html" class="proj-link">View Live Demo <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-num">03</div>
+      <div class="proj-thumb t3">🤖</div>
+      <div class="proj-body">
+        <div class="proj-tags"><span class="ptag">Claude API</span><span class="ptag">JavaScript</span><span class="ptag">AI Chatbot</span></div>
+        <div class="proj-title">BizBot — AI Business Chatbot</div>
+        <p class="proj-desc">AI-powered chatbot for business websites. Answers customer questions, captures leads, and books appointments 24/7 automatically. One line of code to install on any website platform.</p>
+        <a href="chatbot-demo.html" class="proj-link">View Live Demo <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="services reveal" id="services">
+  <div class="svc-inner">
+    <p class="sec-eye">What I Offer</p>
+    <h2 class="sec-head">Services</h2>
+    <div class="svc-grid">
+      <div class="svc-card"><div class="svc-n">01</div><div class="svc-icon">🌐</div><div class="svc-title">Business Landing Page</div><p class="svc-desc">Mobile-first pages for restaurants, shops, clinics, and local businesses. Delivered fast with WhatsApp integration.</p><a href="https://wa.me/919791491767?text=Hi Suriya, I need a Landing Page. Can you give me a quote?" class="svc-quote">Get Free Quote →</a></div>
+      <div class="svc-card"><div class="svc-n">02</div><div class="svc-icon">🤖</div><div class="svc-title">AI Chatbot for Website</div><p class="svc-desc">Custom AI assistant trained on your business. Answers questions, captures leads, books appointments 24/7.</p><a href="https://wa.me/919791491767?text=Hi Suriya, I need an AI Chatbot. Can you give me a quote?" class="svc-quote">Get Free Quote →</a></div>
+      <div class="svc-card"><div class="svc-n">03</div><div class="svc-icon">⚛️</div><div class="svc-title">React Web Application</div><p class="svc-desc">Full stack apps with React + Node.js. Dashboards, SaaS tools, admin panels. Production-ready and scalable.</p><a href="https://wa.me/919791491767?text=Hi Suriya, I need a React Web App. Can you give me a quote?" class="svc-quote">Get Free Quote →</a></div>
+      <div class="svc-card"><div class="svc-n">04</div><div class="svc-icon">🐛</div><div class="svc-title">Bug Fixing</div><p class="svc-desc">Fast fixes for React, Node.js, and PHP projects. Clear timeline, quick turnaround. No guesswork.</p><a href="https://wa.me/919791491767?text=Hi Suriya, I need Bug Fixing help. Can you give me a quote?" class="svc-quote">Get Free Quote →</a></div>
+      <div class="svc-card"><div class="svc-n">05</div><div class="svc-icon">🔌</div><div class="svc-title">API Integration</div><p class="svc-desc">Connect your app to WhatsApp, Razorpay, Google, or any third-party service. Tested and documented.</p><a href="https://wa.me/919791491767?text=Hi Suriya, I need API Integration. Can you give me a quote?" class="svc-quote">Get Free Quote →</a></div>
+      <div class="svc-card"><div class="svc-n">06</div><div class="svc-icon">🔧</div><div class="svc-title">Monthly Maintenance</div><p class="svc-desc">Keep your site updated, secure, and running smoothly. Includes hosting support, backups, and small changes.</p><a href="https://wa.me/919791491767?text=Hi Suriya, I need Monthly Maintenance. Can you give me a quote?" class="svc-quote">Get Free Quote →</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="why reveal">
+  <p class="sec-eye">Why Work With Me</p>
+  <h2 class="sec-head">What Makes Me Different</h2>
+  <div class="why-grid">
+    <div class="why-card"><div class="why-icon">⚡</div><div class="why-title">AI-Speed Delivery</div><p class="why-desc">I use AI tools to build 2–3× faster. Landing page in 24 hours. Full app in a week. Same quality, less wait.</p></div>
+    <div class="why-card"><div class="why-icon">💬</div><div class="why-title">Clear Communication</div><p class="why-desc">Daily updates in Tamil or English. You always know what's happening. No ghosting, no surprises.</p></div>
+    <div class="why-card"><div class="why-icon">📱</div><div class="why-title">Mobile-First Always</div><p class="why-desc">Every project works perfectly on all screens. Your customers browse on phones — your site will look great.</p></div>
+    <div class="why-card"><div class="why-icon">🎯</div><div class="why-title">Business-Focused</div><p class="why-desc">I solve real business problems. If something won't help your business, I'll tell you honestly before building it.</p></div>
+  </div>
+</section>
+
+<div class="cta reveal" id="contact">
+  <div class="cta-inner">
+    <div>
+      <h2>Let's Build Something <span>Together</span></h2>
+      <p>Have a project in mind? Message me on WhatsApp — I'll respond within 1 hour with a free quote. Available for remote freelance projects across India.</p>
+    </div>
+    <div class="cta-btns">
+      <a href="https://wa.me/919791491767" class="wa-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>+91 97914 91767</a>
+      <a href="mailto:buildbysuriya@gmail.com" class="email-btn">✉ buildbysuriya@gmail.com</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="f-logo">SURIYA</div>
+  <p>© <span id="yr"></span> · Full Stack Developer · India</p>
+  <p style="font-size:.7rem;color:var(--muted);">React · Node.js · AI</p>
+</footer>
+
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
+document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>{cur.style.width='16px';cur.style.height='16px';ring.style.width='48px';ring.style.height='48px';});el.addEventListener('mouseleave',()=>{cur.style.width='9px';cur.style.height='9px';ring.style.width='34px';ring.style.height='34px';});});
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+  <script>document.getElementById("yr").textContent=new Date().getFullYear();</script>
+</body>
+</html>

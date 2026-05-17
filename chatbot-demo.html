@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BizBot — AI Chatbot for Business Websites</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#04060F;--surface:#070B16;--card:#0B1020;--accent:#A78BFA;--accent2:#7C3AED;--green:#34D399;--pink:#F472B6;--text:#EEF2FF;--muted:#4A5580;--border:rgba(167,139,250,0.1);}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none;}
+#cur{position:fixed;width:9px;height:9px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:screen;}
+#cur-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(167,139,250,0.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);}
+
+nav{position:fixed;top:0;width:100%;z-index:500;display:flex;justify-content:space-between;align-items:center;padding:1.1rem 5%;background:rgba(4,6,15,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.logo{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;background:linear-gradient(90deg,var(--accent),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-right{display:flex;align-items:center;gap:1rem;}
+.nav-badge{background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);color:var(--accent);font-size:.68rem;padding:.25rem .7rem;border-radius:20px;letter-spacing:1px;text-transform:uppercase;}
+.nav-cta{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;padding:.45rem 1.2rem;border-radius:4px;text-decoration:none;font-size:.78rem;font-weight:600;transition:all .2s;}
+.nav-cta:hover{opacity:.85;transform:translateY(-1px);}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:9rem 5% 5rem;position:relative;overflow:hidden;}
+.hero-dots{position:absolute;inset:0;background-image:radial-gradient(rgba(167,139,250,0.1) 1px,transparent 1px);background-size:38px 38px;mask-image:radial-gradient(ellipse 55% 55% at 75% 40%,black,transparent);}
+.glow-a{position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(124,58,237,0.09),transparent 65%);top:-150px;right:-100px;pointer-events:none;}
+.glow-b{position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(244,114,182,0.05),transparent 65%);bottom:0;left:5%;pointer-events:none;}
+.hero-inner{display:grid;grid-template-columns:1fr 1.05fr;gap:4rem;align-items:center;max-width:1200px;margin:0 auto;width:100%;position:relative;z-index:1;}
+
+.hero-tag{display:inline-flex;align-items:center;gap:.5rem;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.2);padding:.35rem .9rem;border-radius:30px;margin-bottom:1.8rem;animation:up .7s ease both;}
+.hero-tag span{font-size:.7rem;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;}
+.tag-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.5rem,4.5vw,3.8rem);font-weight:800;line-height:1.05;margin-bottom:1.3rem;letter-spacing:-1px;animation:up .7s .1s ease both;opacity:0;}
+.hero h1 span{background:linear-gradient(135deg,var(--accent),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-size:.98rem;color:var(--muted);line-height:1.85;max-width:460px;margin-bottom:2.2rem;animation:up .7s .2s ease both;opacity:0;}
+.hero-sub strong{color:var(--text);}
+.hero-btns{display:flex;gap:.8rem;flex-wrap:wrap;animation:up .7s .3s ease both;opacity:0;}
+.btn-p{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;padding:.82rem 1.8rem;border-radius:5px;font-weight:600;font-size:.88rem;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:.5rem;}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(124,58,237,0.3);}
+.btn-g{border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:.82rem 1.8rem;border-radius:5px;font-size:.88rem;text-decoration:none;transition:all .2s;}
+.btn-g:hover{border-color:rgba(167,139,250,0.35);color:var(--accent);}
+
+/* DEMO BOX */
+.demo-box{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.6);animation:up .7s .4s ease both;opacity:0;position:relative;}
+
+/* SECRET API PANEL — invisible until shortcut */
+.secret-panel{display:none;position:absolute;top:0;left:0;right:0;z-index:50;background:rgba(7,11,22,0.97);border-bottom:1px solid rgba(167,139,250,0.2);padding:.7rem 1rem;align-items:center;gap:.8rem;}
+.secret-panel.show{display:flex;}
+.secret-input{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(167,139,250,0.2);color:var(--text);padding:.4rem .8rem;border-radius:5px;font-family:'DM Sans',sans-serif;font-size:.78rem;outline:none;}
+.secret-input:focus{border-color:rgba(167,139,250,0.4);}
+.secret-input::placeholder{color:var(--muted);}
+.secret-save{background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;color:#fff;padding:.4rem 1rem;border-radius:5px;font-size:.75rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .2s;}
+.secret-save:hover{opacity:.85;}
+.secret-close{background:transparent;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:.2rem .4rem;}
+.ai-active-dot{display:none;position:absolute;top:.7rem;right:.7rem;width:8px;height:8px;background:var(--green);border-radius:50%;z-index:10;box-shadow:0 0 6px rgba(52,211,153,.6);}
+.ai-active-dot.show{display:block;}
+
+/* SALON HEADER */
+.salon-header{background:linear-gradient(135deg,#1A0A2E,#0D0618);}
+.salon-top{display:flex;align-items:center;gap:.8rem;padding:1rem 1.2rem;border-bottom:1px solid rgba(167,139,250,0.08);}
+.salon-logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent2),var(--pink));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.salon-name{font-weight:700;font-size:.9rem;color:var(--text);}
+.salon-tagline{font-size:.7rem;color:var(--muted);}
+.salon-nav{display:flex;}
+.snav{flex:1;background:transparent;border:none;color:var(--muted);padding:.6rem;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;cursor:default;font-family:'DM Sans',sans-serif;text-align:center;border-bottom:2px solid transparent;}
+.snav.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* CHAT */
+.chat-msgs{height:270px;overflow-y:auto;padding:.8rem;display:flex;flex-direction:column;gap:.6rem;scroll-behavior:smooth;}
+.chat-msgs::-webkit-scrollbar{width:3px;}
+.chat-msgs::-webkit-scrollbar-thumb{background:rgba(167,139,250,0.15);border-radius:2px;}
+.msg{display:flex;gap:.5rem;align-items:flex-end;max-width:88%;animation:msgIn .3s ease;}
+.msg.user{flex-direction:row-reverse;align-self:flex-end;}
+.msg-bubble{padding:.62rem .9rem;border-radius:10px;font-size:.82rem;line-height:1.55;}
+.msg.bot .msg-bubble{background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.12);border-bottom-left-radius:3px;}
+.msg.user .msg-bubble{background:linear-gradient(135deg,rgba(124,58,237,0.25),rgba(244,114,182,0.15));border:1px solid rgba(167,139,250,0.2);border-bottom-right-radius:3px;}
+.msg-ava{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),var(--pink));display:flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0;}
+.typing-ind{display:flex;gap:3px;padding:.62rem .9rem;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.12);border-radius:10px;border-bottom-left-radius:3px;width:fit-content;}
+.typing-ind span{width:5px;height:5px;background:var(--muted);border-radius:50%;animation:bounce 1.2s infinite;}
+.typing-ind span:nth-child(2){animation-delay:.2s;}.typing-ind span:nth-child(3){animation-delay:.4s;}
+
+.qr-wrap{display:flex;flex-wrap:wrap;gap:.35rem;padding:.5rem .8rem .3rem;}
+.qr{background:transparent;border:1px solid rgba(167,139,250,0.2);color:var(--accent);padding:.26rem .72rem;border-radius:20px;font-size:.73rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.qr:hover{background:rgba(167,139,250,0.08);border-color:var(--accent);}
+
+/* LIVE DEMO CTA STRIP — shown to visitors */
+.demo-cta-strip{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;background:rgba(167,139,250,0.05);border-top:1px solid rgba(167,139,250,0.1);flex-wrap:wrap;gap:.5rem;}
+.demo-cta-strip p{font-size:.75rem;color:var(--muted);}
+.demo-cta-strip p strong{color:var(--accent);}
+.demo-wa-btn{display:inline-flex;align-items:center;gap:.4rem;background:#25D366;color:#fff;padding:.35rem .9rem;border-radius:5px;font-size:.73rem;font-weight:600;text-decoration:none;transition:all .2s;white-space:nowrap;}
+.demo-wa-btn:hover{background:#1ebd5a;}
+
+.chat-input-area{display:flex;gap:.5rem;padding:.72rem;border-top:1px solid var(--border);background:rgba(255,255,255,0.01);}
+.chat-input-area input{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);color:var(--text);padding:.52rem .88rem;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:.82rem;outline:none;transition:border-color .2s;}
+.chat-input-area input:focus{border-color:rgba(167,139,250,0.3);}
+.chat-input-area input::placeholder{color:var(--muted);}
+.send-btn{background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;color:#fff;width:35px;height:35px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.send-btn:hover{opacity:.85;}
+
+/* WHAT IT DOES */
+.what{padding:6rem 5%;max-width:1200px;margin:0 auto;}
+.sec-eye{font-size:.68rem;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:.5rem;}
+.sec-head{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-1px;margin-bottom:.8rem;}
+.sec-sub{color:var(--muted);font-size:.93rem;max-width:500px;line-height:1.7;margin-bottom:3rem;}
+.use-cases{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.uc-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.8rem;transition:border-color .25s,transform .25s;}
+.uc-card:hover{border-color:rgba(167,139,250,0.25);transform:translateY(-4px);}
+.uc-icon{font-size:2rem;margin-bottom:.8rem;}
+.uc-biz{font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem;}
+.uc-title{font-size:.95rem;font-weight:600;margin-bottom:.5rem;}
+.uc-convos{display:flex;flex-direction:column;gap:.4rem;margin-top:.8rem;}
+.uc-q{font-size:.75rem;color:var(--muted);background:rgba(255,255,255,0.03);border-left:2px solid rgba(167,139,250,0.3);padding:.3rem .6rem;border-radius:0 4px 4px 0;}
+
+/* HOW */
+.how{padding:5rem 5%;border-top:1px solid var(--border);}
+.how-inner{max-width:1200px;margin:0 auto;}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:3rem;}
+.step{background:var(--card);padding:2rem 1.5rem;transition:background .2s;}
+.step:hover{background:rgba(167,139,250,0.03);}
+.step-n{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:rgba(167,139,250,0.07);line-height:1;margin-bottom:.6rem;}
+.step-icon{font-size:1.4rem;margin-bottom:.7rem;}
+.step-title{font-size:.92rem;font-weight:600;margin-bottom:.35rem;}
+.step-desc{font-size:.78rem;color:var(--muted);line-height:1.6;}
+
+/* FEATURES */
+.feats{padding:5rem 5%;background:linear-gradient(180deg,transparent,rgba(167,139,250,0.02),transparent);border-top:1px solid var(--border);}
+.feats-inner{max-width:1200px;margin:0 auto;}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:3rem;}
+.feat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.8rem;display:flex;gap:1rem;align-items:flex-start;transition:border-color .2s,transform .2s;}
+.feat-card:hover{border-color:rgba(167,139,250,0.22);transform:translateY(-3px);}
+.feat-icon-box{width:44px;height:44px;border-radius:10px;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.15);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.feat-title{font-size:.93rem;font-weight:600;margin-bottom:.35rem;}
+.feat-desc{font-size:.79rem;color:var(--muted);line-height:1.6;}
+
+/* CTA */
+.cta{margin:5rem 5%;border-radius:16px;border:1px solid rgba(167,139,250,0.15);background:linear-gradient(135deg,rgba(124,58,237,0.07),rgba(244,114,182,0.04));padding:5rem 4rem;text-align:center;position:relative;overflow:hidden;}
+.cta::before{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(124,58,237,0.08),transparent 70%);top:-120px;left:50%;transform:translateX(-50%);pointer-events:none;}
+.cta h2{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-1px;margin-bottom:.8rem;position:relative;}
+.cta h2 span{background:linear-gradient(135deg,var(--accent),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.cta p{color:var(--muted);margin-bottom:2.5rem;font-size:.93rem;position:relative;}
+.cta-btns{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;position:relative;}
+.wa-cta{background:#25D366;color:#fff;padding:.9rem 2rem;border-radius:7px;font-weight:600;text-decoration:none;font-size:.88rem;display:inline-flex;align-items:center;gap:.6rem;transition:all .2s;}
+.wa-cta:hover{background:#1ebd5a;transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,0.22);}
+.email-cta{border:1px solid var(--border);color:var(--text);padding:.9rem 2rem;border-radius:7px;font-size:.88rem;text-decoration:none;transition:all .2s;}
+.email-cta:hover{border-color:rgba(167,139,250,0.35);color:var(--accent);}
+
+footer{border-top:1px solid var(--border);padding:1.8rem 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.f-logo{font-family:'Syne',sans-serif;font-weight:800;background:linear-gradient(90deg,var(--accent),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+footer p{font-size:.72rem;color:var(--muted);}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+@keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.hero-inner{grid-template-columns:1fr;}.steps{grid-template-columns:1fr 1fr;}.feat-grid{grid-template-columns:1fr;}.use-cases{grid-template-columns:1fr;}.nav-badge{display:none;}}
+@media(max-width:600px){.steps{grid-template-columns:1fr;}.cta{padding:3rem 1.5rem;}}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="cur-ring"></div>
+
+<nav>
+  <div class="logo">BizBot</div>
+  <div class="nav-right">
+    <div class="nav-badge">AI Powered</div>
+    <a href="https://wa.me/919791491766?text=Hi Suriya, I want BizBot for my business" class="nav-cta">Get a Quote</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-dots"></div><div class="glow-a"></div><div class="glow-b"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-tag"><div class="tag-dot"></div><span>Try the Demo Below</span></div>
+      <h1>Your Customers Get <span>Instant Answers</span> — You Get More Bookings</h1>
+      <p class="hero-sub">BizBot is an <strong>AI assistant trained on your business</strong>. It answers customer questions, takes bookings, and captures leads — automatically, 24/7.</p>
+      <div class="hero-btns">
+        <a href="https://wa.me/919791491766?text=Hi Suriya, I want BizBot for my business website" class="btn-p">Get BizBot for My Site</a>
+        <a href="#what" class="btn-g">See How It Works</a>
+      </div>
+    </div>
+
+    <!-- CHATBOT DEMO -->
+    <div class="demo-box">
+
+      <!-- SECRET PANEL — only visible after Ctrl+Shift+A -->
+      <div class="secret-panel" id="secretPanel">
+        <input type="password" class="secret-input" id="apiKeyInput" placeholder="Paste Anthropic API key (sk-ant-...)"/>
+        <button class="secret-save" onclick="saveKey()">Enable AI</button>
+        <button class="secret-close" onclick="closeSecret()">✕</button>
+      </div>
+
+      <!-- AI active indicator — tiny green dot, only you'll notice -->
+      <div class="ai-active-dot" id="aiDot" title="AI Mode Active"></div>
+
+      <!-- SALON HEADER -->
+      <div class="salon-header">
+        <div class="salon-top">
+          <div class="salon-logo">💇</div>
+          <div>
+            <div class="salon-name">Glamour Studio — Chennai</div>
+            <div class="salon-tagline">Ladies Beauty Salon · Velachery</div>
+          </div>
+        </div>
+        <div class="salon-nav">
+          <div class="snav active">💬 Chat with us</div>
+          <div class="snav">📋 Services</div>
+          <div class="snav">📍 Location</div>
+        </div>
+      </div>
+
+      <!-- MESSAGES -->
+      <div class="chat-msgs" id="chatMsgs">
+        <div class="msg bot">
+          <div class="msg-ava">💇</div>
+          <div class="msg-bubble">👋 Hi! Welcome to Glamour Studio. I can answer questions about our services, prices, timings, and help you book an appointment. How can I help?</div>
+        </div>
+      </div>
+
+      <!-- QUICK REPLIES -->
+      <div class="qr-wrap" id="qrWrap">
+        <button class="qr" onclick="sendQ('What services do you offer?')">Services?</button>
+        <button class="qr" onclick="sendQ('What are your timings?')">Timings?</button>
+        <button class="qr" onclick="sendQ('How much is a haircut?')">Haircut price?</button>
+        <button class="qr" onclick="sendQ('I want to book an appointment')">Book Now</button>
+        <button class="qr" onclick="sendQ('Where are you located?')">Location?</button>
+      </div>
+
+      <!-- VISITOR CTA STRIP -->
+      <div class="demo-cta-strip">
+        <p>This is a <strong>sample demo</strong>. Want a live AI version for your business?</p>
+        <a href="https://wa.me/919791491766?text=Hi Suriya, I want to see a live AI demo of BizBot for my business" class="demo-wa-btn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Contact for Live Demo
+        </a>
+      </div>
+
+      <!-- INPUT -->
+      <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Ask anything about our salon..." onkeydown="if(event.key==='Enter')sendMsg()"/>
+        <button class="send-btn" onclick="sendMsg()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IT DOES -->
+<div class="what reveal" id="what">
+  <p class="sec-eye">Real Use Cases</p>
+  <h2 class="sec-head">What Does BizBot Actually Do?</h2>
+  <p class="sec-sub">BizBot is trained on YOUR business info — so it answers exactly like your staff would. Here's how different businesses use it:</p>
+  <div class="use-cases">
+    <div class="uc-card">
+      <div class="uc-icon">💇‍♀️</div>
+      <div class="uc-biz">Beauty Salon</div>
+      <div class="uc-title">Answers & Books Appointments</div>
+      <div class="uc-convos">
+        <div class="uc-q">Customer: "How much for a facial?"</div>
+        <div class="uc-q">Bot: "Our gold facial is ₹799. Want to book this weekend?"</div>
+        <div class="uc-q">Customer: "Yes, Saturday 3pm"</div>
+        <div class="uc-q">Bot: "Booked! We'll confirm on WhatsApp 💅"</div>
+      </div>
+    </div>
+    <div class="uc-card">
+      <div class="uc-icon">🍽️</div>
+      <div class="uc-biz">Restaurant</div>
+      <div class="uc-title">Menu, Timings & Table Booking</div>
+      <div class="uc-convos">
+        <div class="uc-q">Customer: "Do you do home delivery?"</div>
+        <div class="uc-q">Bot: "Yes! We deliver within 5km. Min order ₹200."</div>
+        <div class="uc-q">Customer: "What time do you close Sunday?"</div>
+        <div class="uc-q">Bot: "Sundays 8AM–10PM. Want to reserve a table?"</div>
+      </div>
+    </div>
+    <div class="uc-card">
+      <div class="uc-icon">🏥</div>
+      <div class="uc-biz">Clinic / Hospital</div>
+      <div class="uc-title">Appointments & Doctor Info</div>
+      <div class="uc-convos">
+        <div class="uc-q">Patient: "Is Dr. Priya available tomorrow?"</div>
+        <div class="uc-q">Bot: "Dr. Priya is available 10AM–1PM tomorrow."</div>
+        <div class="uc-q">Patient: "Book me at 11am"</div>
+        <div class="uc-q">Bot: "Done! Reminder sent to WhatsApp ✅"</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="how reveal">
+  <div class="how-inner">
+    <p class="sec-eye">How It Works</p>
+    <h2 class="sec-head">Up & Running in 24 Hours</h2>
+    <div class="steps">
+      <div class="step"><div class="step-n">01</div><div class="step-icon">📋</div><div class="step-title">Share Your Info</div><p class="step-desc">Tell us your services, prices, timings, and FAQs. WhatsApp is fine.</p></div>
+      <div class="step"><div class="step-n">02</div><div class="step-icon">🧠</div><div class="step-title">We Train BizBot</div><p class="step-desc">BizBot is trained specifically on your business — not generic answers.</p></div>
+      <div class="step"><div class="step-n">03</div><div class="step-icon">🔌</div><div class="step-title">One Line of Code</div><p class="step-desc">Paste one script tag on your site. Works on WordPress, Wix, or HTML.</p></div>
+      <div class="step"><div class="step-n">04</div><div class="step-icon">🚀</div><div class="step-title">Go Live!</div><p class="step-desc">Your bot answers customers 24/7 and sends leads to your WhatsApp from day one.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="feats reveal">
+  <div class="feats-inner">
+    <p class="sec-eye">Features</p>
+    <h2 class="sec-head">Everything Included</h2>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="feat-icon-box">⚡</div><div><div class="feat-title">Instant Replies 24/7</div><p class="feat-desc">Customers get answers in under 2 seconds — even at midnight on Sunday.</p></div></div>
+      <div class="feat-card"><div class="feat-icon-box">🎯</div><div><div class="feat-title">Trained on Your Business</div><p class="feat-desc">Every answer is specific to your services, prices, and policies. Not generic AI.</p></div></div>
+      <div class="feat-card"><div class="feat-icon-box">📱</div><div><div class="feat-title">Leads Sent to WhatsApp</div><p class="feat-desc">When a customer wants to book, their details go straight to your WhatsApp.</p></div></div>
+      <div class="feat-card"><div class="feat-icon-box">🗣️</div><div><div class="feat-title">Tamil & English</div><p class="feat-desc">BizBot replies in Tamil or English depending on how the customer types.</p></div></div>
+      <div class="feat-card"><div class="feat-icon-box">🔌</div><div><div class="feat-title">Works on Any Website</div><p class="feat-desc">WordPress, Wix, Shopify, plain HTML — one script tag and it's live.</p></div></div>
+      <div class="feat-card"><div class="feat-icon-box">🔄</div><div><div class="feat-title">Easy to Update</div><p class="feat-desc">Changed prices or added a service? Just WhatsApp us and we update same day.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta reveal">
+  <h2>Add <span>BizBot</span> to Your Business Website</h2>
+  <p>Setup in 24 hours. Message us on WhatsApp with your business details and we'll get started today.</p>
+  <div class="cta-btns">
+    <a href="https://wa.me/919791491766?text=Hi Suriya, I want BizBot for my business website" class="wa-cta">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      WhatsApp Us to Get Started
+    </a>
+    <a href="mailto:buildbysuriya@gmail.com" class="email-cta">✉ Send Email Instead</a>
+  </div>
+</div>
+
+<footer>
+  <div class="f-logo">BizBot</div>
+  <p>© 2025 BizBot · AI Chatbot for Businesses · Chennai, Tamil Nadu</p>
+  <p style="font-size:.7rem;color:rgba(74,85,128,.5);">Built by Suriya · buildbysuriya@gmail.com</p>
+</footer>
+
+<script>
+// CURSOR
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
+
+// SECRET SHORTCUT — Ctrl + Shift + A opens the API panel (only you know this)
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+    document.getElementById('secretPanel').classList.toggle('show');
+  }
+});
+
+// SALON SYSTEM PROMPT
+const SALON_PROMPT = `You are the AI assistant for Glamour Studio, a ladies beauty salon in Velachery, Chennai.
+
+Business Info:
+- Location: 42, 100 Feet Road, Velachery, Chennai 600042 (2 min from Velachery Metro)
+- Phone: 97914 91766
+- Timings: Mon–Sat 9AM–8PM, Sun 10AM–6PM
+
+Services & Prices:
+HAIR: Basic Trim ₹150 | Style Cut ₹250 | Cut+Wash+Blowdry ₹399 | Hair Colour from ₹800 | Keratin from ₹2500 | Kids Cut ₹120
+FACE: Basic Cleanup ₹299 | Gold Facial ₹799 | Bleach ₹199 | Eyebrow Threading ₹50 | Upper Lip ₹30
+NAILS: Manicure ₹299 | Pedicure ₹399 | Nail Art from ₹199
+BODY: Full Body Wax ₹699 | Half Leg Wax ₹299 | Body Polish ₹999
+
+Rules:
+- Answer only about this salon
+- Be friendly, warm, short replies (max 5 lines)
+- When someone wants to book, ask name, service, date and time
+- For complaints or payments, direct to call 97914 91766
+- Reply in Tamil if they write in Tamil, English otherwise`;
+
+// HARDCODED ANSWERS
+const fixedAnswers = {
+  "what services do you offer?": "We offer a full range of beauty services! 💇‍♀️\n\n✂️ Hair — Cut, Colour, Straightening, Keratin\n💆 Face — Cleanup, Facial, Bleach, Threading\n💅 Nails — Manicure, Pedicure, Nail Art\n🌸 Body — Waxing, Body Polishing\n\nWhich service interests you?",
+  "what are your timings?": "We're open 7 days a week! ⏰\n\n🗓 Monday – Saturday: 9:00 AM – 8:00 PM\n🗓 Sunday: 10:00 AM – 6:00 PM\n\n💡 Weekday mornings are less busy!\n\nWant to book an appointment?",
+  "how much is a haircut?": "Our haircut prices 💇‍♀️\n\n✂️ Basic Trim — ₹150\n✂️ Style Cut — ₹250\n✂️ Cut + Wash + Blow Dry — ₹399\n✂️ Kids Haircut — ₹120\n\nWant to book one?",
+  "i want to book an appointment": "I'd love to help you book! 📅\n\nPlease share:\n1️⃣ Your name\n2️⃣ Service you want\n3️⃣ Preferred date & time\n\nOr WhatsApp us at 97914 91766 — confirmed in 5 mins! 💬",
+  "where are you located?": "Easy to find! 📍\n\n🏢 42, 100 Feet Road, Velachery\nChennai – 600042\n\n🚇 2 min walk from Velachery Metro\n📞 97914 91766\n\nSee you soon! 😊"
+};
+
+let aiMode = false;
+let apiKey = '';
+let chatHistory = [];
+
+function saveKey() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if (!key.startsWith('sk-ant-')) {
+    alert('Invalid API key. Must start with sk-ant-');
+    return;
+  }
+  apiKey = key;
+  aiMode = true;
+  document.getElementById('secretPanel').classList.remove('show');
+  document.getElementById('aiDot').classList.add('show');
+  // Reset chat history for clean AI session
+  chatHistory = [];
+}
+
+function closeSecret() {
+  document.getElementById('secretPanel').classList.remove('show');
+}
+
+function addMsg(text, isUser) {
+  const box = document.getElementById('chatMsgs');
+  const d = document.createElement('div');
+  d.className = 'msg ' + (isUser ? 'user' : 'bot');
+  d.innerHTML = isUser
+    ? `<div class="msg-bubble">${text}</div>`
+    : `<div class="msg-ava">💇</div><div class="msg-bubble">${text.replace(/\n/g, '<br/>')}</div>`;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+}
+
+function showTyping() {
+  const box = document.getElementById('chatMsgs');
+  const d = document.createElement('div'); d.className = 'msg bot'; d.id = 'typ';
+  d.innerHTML = '<div class="msg-ava">💇</div><div class="typing-ind"><span></span><span></span><span></span></div>';
+  box.appendChild(d); box.scrollTop = box.scrollHeight;
+}
+function removeTyping() { const t = document.getElementById('typ'); if (t) t.remove(); }
+
+async function botReply(userMsg) {
+  showTyping();
+
+  if (aiMode && apiKey) {
+    // REAL CLAUDE AI
+    chatHistory.push({ role: "user", content: userMsg });
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true"
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 300,
+          system: SALON_PROMPT,
+          messages: chatHistory
+        })
+      });
+      const data = await res.json();
+      removeTyping();
+      if (data.content && data.content[0]) {
+        const reply = data.content[0].text;
+        chatHistory.push({ role: "assistant", content: reply });
+        addMsg(reply, false);
+      } else {
+        addMsg("Sorry, something went wrong. Please try again.", false);
+      }
+    } catch (err) {
+      removeTyping();
+      addMsg("Connection error. Please try again.", false);
+    }
+  } else {
+    // DEMO MODE
+    setTimeout(() => {
+      removeTyping();
+      const key = userMsg.toLowerCase().trim();
+      const reply = fixedAnswers[key] || "Great question! For more details, please WhatsApp us at 97914 91766 — we reply within 5 minutes. 😊";
+      addMsg(reply, false);
+    }, 1100);
+  }
+}
+
+function sendMsg() {
+  const inp = document.getElementById('chatInput');
+  const t = inp.value.trim(); if (!t) return;
+  addMsg(t, true); inp.value = '';
+  document.getElementById('qrWrap').style.display = 'none';
+  botReply(t);
+}
+
+function sendQ(t) {
+  addMsg(t, true);
+  document.getElementById('qrWrap').style.display = 'none';
+  botReply(t);
+}
+
+// SCROLL REVEAL
+const obs = new IntersectionObserver(e => e.forEach(i => { if (i.isIntersecting) i.target.classList.add('visible'); }), { threshold: .1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
